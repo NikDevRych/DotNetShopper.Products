@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DotNetShopper.Products.Infrastructure\DotNetShopper.Products.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
