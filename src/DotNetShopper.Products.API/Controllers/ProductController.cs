@@ -46,10 +46,22 @@ public class ProductController : ControllerBase
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateProduct(UpdateProductRequest request)
     {
         var product = await _productService.UpdateProduct(request);
         if (product == null) return NotFound();
         return Ok(product);
+    }
+
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RemoveProduct(int id)
+    {
+        var productToRemove = await _productService.GetProductEntity(id);
+        if (productToRemove == null) return NotFound();
+        await _productService.RemoveProduct(productToRemove);
+        return Ok();
     }
 }

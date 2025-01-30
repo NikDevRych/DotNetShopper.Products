@@ -97,4 +97,15 @@ public class ProductServices : IProductServices
 
         return productResponse;
     }
+
+    public async Task<Product?> GetProductEntity(int id)
+    {
+        return await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    public async Task RemoveProduct(Product product)
+    {
+        _dbContext.Products.Remove(product);
+        await _dbContext.SaveChangesAsync();
+    }
 }
