@@ -42,4 +42,14 @@ public class ProductController : ControllerBase
         var products = await _productService.GetProducts(count, skip);
         return Ok(products);
     }
+
+    [HttpPut]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateProduct(UpdateProductRequest request)
+    {
+        var product = await _productService.UpdateProduct(request);
+        if (product == null) return NotFound();
+        return Ok(product);
+    }
 }

@@ -10,4 +10,5 @@ public interface IProductServices
     Task<int> CreateProduct(CreateProductRequest request);
     Task<ProductResponse?> GetProduct(int id);
     Task<List<ProductResponse>> GetProducts(int count, int skip);
+    Task<ProductResponse?> UpdateProduct(UpdateProductRequest request);
 }

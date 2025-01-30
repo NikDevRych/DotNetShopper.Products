@@ -62,4 +62,29 @@ public class ProductServices : IProductServices
             })
             .ToListAsync();
     }
+
+    public async Task<ProductResponse?> UpdateProduct(UpdateProductRequest request)
+    {
+        var productToUpdate = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == request.Id);
+        if (productToUpdate == null) return null;
+
+        productToUpdate.Name = request.Name;
+        productToUpdate.Price = request.Price;
+        productToUpdate.SalePrice = request.SalePrice;
+        productToUpdate.IsActive = request.IsActive;
+        productToUpdate.IsSale = request.IsSale;
+
+        await _dbContext.SaveChangesAsync();
+
+        var productResponse = new ProductResponse
+        {
+            Name = productToUpdate.Name,
+            Price = productToUpdate.Price,
+            SalePrice = productToUpdate.SalePrice,
+            IsActive = productToUpdate.IsActive,
+            IsSale = productToUpdate.IsSale
+        };
+
+        return productResponse;
+    }
 }
