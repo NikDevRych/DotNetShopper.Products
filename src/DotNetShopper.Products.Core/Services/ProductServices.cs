@@ -17,13 +17,18 @@ public class ProductServices : IProductServices
 
     public async Task<int> CreateProduct(CreateProductRequest request)
     {
+        ArgumentNullException.ThrowIfNullOrEmpty(request.Name);
+        ArgumentNullException.ThrowIfNull(request.Price);
+        ArgumentNullException.ThrowIfNull(request.IsActive);
+        ArgumentNullException.ThrowIfNull(request.IsSale);
+
         var productForCreate = new Product
         {
             Name = request.Name,
-            Price = request.Price,
+            Price = request.Price.Value,
             SalePrice = request.SalePrice,
-            IsActive = request.IsActive,
-            IsSale = request.IsSale
+            IsActive = request.IsActive.Value,
+            IsSale = request.IsSale.Value
         };
 
         await _dbContext.Products.AddAsync(productForCreate);
@@ -65,14 +70,19 @@ public class ProductServices : IProductServices
 
     public async Task<ProductResponse?> UpdateProduct(UpdateProductRequest request)
     {
+        ArgumentNullException.ThrowIfNullOrEmpty(request.Name);
+        ArgumentNullException.ThrowIfNull(request.Price);
+        ArgumentNullException.ThrowIfNull(request.IsActive);
+        ArgumentNullException.ThrowIfNull(request.IsSale);
+
         var productToUpdate = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == request.Id);
         if (productToUpdate == null) return null;
 
         productToUpdate.Name = request.Name;
-        productToUpdate.Price = request.Price;
+        productToUpdate.Price = request.Price.Value;
         productToUpdate.SalePrice = request.SalePrice;
-        productToUpdate.IsActive = request.IsActive;
-        productToUpdate.IsSale = request.IsSale;
+        productToUpdate.IsActive = request.IsActive.Value;
+        productToUpdate.IsSale = request.IsSale.Value;
 
         await _dbContext.SaveChangesAsync();
 

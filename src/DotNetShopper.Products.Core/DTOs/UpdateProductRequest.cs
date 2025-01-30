@@ -9,22 +9,22 @@ public sealed class UpdateProductRequest
 {
     [Required]
     [Range(0, int.MaxValue)]
-    public int Id { get; set; }
+    public int? Id { get; set; }
 
     [Required]
     [StringLength(120)]
-    public string Name { get; set; } = null!;
+    public string? Name { get; set; }
 
     [Required]
     [Range(0, float.MaxValue)]
-    public float Price { get; set; }
+    public float? Price { get; set; }
 
     [Range(0, float.MaxValue)]
     public float? SalePrice { get; set; }
 
     [Required]
-    public bool IsActive { get; set; }
+    public bool? IsActive { get; set; }
 
     [Required]
-    public bool IsSale { get; set; }
+    public bool? IsSale { get; set; }
 }
