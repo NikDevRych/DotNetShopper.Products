@@ -1,10 +1,53 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C93A8955-9DE0-4A47-9674-760BE19EC105}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetShopper.Products.API", "src\DotNetShopper.Products.API\DotNetShopper.Products.API.csproj", "{053620D3-2BE2-4EA7-B9D8-5237634398EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetShopper.Products.Core", "src\DotNetShopper.Products.Core\DotNetShopper.Products.Core.csproj", "{AF250780-1523-4D94-8E37-B82881696F74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetShopper.Products.Domain", "src\DotNetShopper.Products.Domain\DotNetShopper.Products.Domain.csproj", "{9F0656F1-F9C0-4E5A-9166-0C2196DEC48C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetShopper.Products.Infrastructure", "src\DotNetShopper.Products.Infrastructure\DotNetShopper.Products.Infrastructure.csproj", "{C1C48EA5-D9D0-4024-A2CF-E19967B7EA80}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E637355E-5B75-4E57-A42A-8D4E008BF005}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{053620D3-2BE2-4EA7-B9D8-5237634398EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{053620D3-2BE2-4EA7-B9D8-5237634398EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{053620D3-2BE2-4EA7-B9D8-5237634398EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{053620D3-2BE2-4EA7-B9D8-5237634398EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF250780-1523-4D94-8E37-B82881696F74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF250780-1523-4D94-8E37-B82881696F74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF250780-1523-4D94-8E37-B82881696F74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF250780-1523-4D94-8E37-B82881696F74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F0656F1-F9C0-4E5A-9166-0C2196DEC48C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F0656F1-F9C0-4E5A-9166-0C2196DEC48C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F0656F1-F9C0-4E5A-9166-0C2196DEC48C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F0656F1-F9C0-4E5A-9166-0C2196DEC48C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1C48EA5-D9D0-4024-A2CF-E19967B7EA80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1C48EA5-D9D0-4024-A2CF-E19967B7EA80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1C48EA5-D9D0-4024-A2CF-E19967B7EA80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1C48EA5-D9D0-4024-A2CF-E19967B7EA80}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{053620D3-2BE2-4EA7-B9D8-5237634398EE} = {C93A8955-9DE0-4A47-9674-760BE19EC105}
+		{AF250780-1523-4D94-8E37-B82881696F74} = {C93A8955-9DE0-4A47-9674-760BE19EC105}
+		{9F0656F1-F9C0-4E5A-9166-0C2196DEC48C} = {C93A8955-9DE0-4A47-9674-760BE19EC105}
+		{C1C48EA5-D9D0-4024-A2CF-E19967B7EA80} = {C93A8955-9DE0-4A47-9674-760BE19EC105}
 	EndGlobalSection
 EndGlobal
