@@ -15,7 +15,7 @@ public class ProductServices : IProductServices
         _dbContext = dbContext;
     }
 
-    public async Task CreateProduct(CreateProductRequest request)
+    public async Task<int> CreateProduct(CreateProductRequest request)
     {
         var productForCreate = new Product
         {
@@ -28,6 +28,8 @@ public class ProductServices : IProductServices
 
         await _dbContext.Products.AddAsync(productForCreate);
         await _dbContext.SaveChangesAsync();
+
+        return productForCreate.Id;
     }
 
     public async Task<Product?> GetProduct(int id)

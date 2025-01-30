@@ -21,8 +21,8 @@ public class ProductController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateProduct(CreateProductRequest request)
     {
-        await _productService.CreateProduct(request);
-        return Created();
+        var productId = await _productService.CreateProduct(request);
+        return CreatedAtAction(nameof(GetProduct), new { id = productId }, null);
     }
 
     [HttpGet("{id}")]
