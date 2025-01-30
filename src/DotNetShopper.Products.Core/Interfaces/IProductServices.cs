@@ -1,5 +1,4 @@
 ﻿using DotNetShopper.Products.Core.DTOs;
-using DotNetShopper.Products.Domain.Entities;
 
 namespace DotNetShopper.Products.Core.Interfaces;
 
@@ -9,6 +8,6 @@ namespace DotNetShopper.Products.Core.Interfaces;
 public interface IProductServices
 {
     Task<int> CreateProduct(CreateProductRequest request);
-    Task<Product?> GetProduct(int id);
-    Task<List<Product>> GetProducts(int count, int skip);
+    Task<ProductResponse?> GetProduct(int id);
+    Task<List<ProductResponse>> GetProducts(int count, int skip);
 }

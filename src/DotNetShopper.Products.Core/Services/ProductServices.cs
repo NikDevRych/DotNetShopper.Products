@@ -32,13 +32,34 @@ public class ProductServices : IProductServices
         return productForCreate.Id;
     }
 
-    public async Task<Product?> GetProduct(int id)
+    public async Task<ProductResponse?> GetProduct(int id)
     {
-        return await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
+        return await _dbContext.Products.Where(p => p.Id == id)
+            .Select(p => new ProductResponse
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                SalePrice = p.SalePrice,
+                IsActive = p.IsActive,
+                IsSale = p.IsSale
+            })
+            .FirstOrDefaultAsync();
     }
 
-    public async Task<List<Product>> GetProducts(int count, int skip)
+    public async Task<List<ProductResponse>> GetProducts(int count, int skip)
     {
-        return await _dbContext.Products.Skip(skip).Take(count).ToListAsync();
+        return await _dbContext.Products
+            .Skip(skip).Take(count)
+            .Select(p => new ProductResponse
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                SalePrice = p.SalePrice,
+                IsActive = p.IsActive,
+                IsSale = p.IsSale
+            })
+            .ToListAsync();
     }
 }
