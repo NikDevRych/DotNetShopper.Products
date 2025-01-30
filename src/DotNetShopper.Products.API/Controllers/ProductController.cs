@@ -24,4 +24,22 @@ public class ProductController : ControllerBase
         await _productService.CreateProduct(request);
         return Created();
     }
+
+    [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetProduct(int id)
+    {
+        var product = await _productService.GetProduct(id);
+        if (product == null) return NotFound();
+        return Ok(product);
+    }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetProduct(int count = 10, int skip = 0)
+    {
+        var products = await _productService.GetProducts(count, skip);
+        return Ok(products);
+    }
 }

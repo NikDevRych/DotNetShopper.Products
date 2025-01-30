@@ -2,6 +2,7 @@
 using DotNetShopper.Products.Core.Interfaces;
 using DotNetShopper.Products.Domain.Entities;
 using DotNetShopper.Products.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace DotNetShopper.Products.Core.Services;
 
@@ -27,5 +28,15 @@ public class ProductServices : IProductServices
 
         await _dbContext.Products.AddAsync(productForCreate);
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<Product?> GetProduct(int id)
+    {
+        return await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
+    }
+
+    public async Task<List<Product>> GetProducts(int count, int skip)
+    {
+        return await _dbContext.Products.Skip(skip).Take(count).ToListAsync();
     }
 }
