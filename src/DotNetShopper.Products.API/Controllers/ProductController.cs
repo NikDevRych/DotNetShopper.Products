@@ -6,6 +6,7 @@ namespace DotNetShopper.Products.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Produces("application/json")]
 public class ProductController : ControllerBase
 {
     private readonly IProductServices _productService;
@@ -15,6 +16,9 @@ public class ProductController : ControllerBase
         _productService = productService;
     }
 
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateProduct(CreateProductRequest request)
     {
         await _productService.CreateProduct(request);
