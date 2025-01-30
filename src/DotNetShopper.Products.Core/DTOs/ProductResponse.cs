@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents product response DTO
 /// </summary>
-public class ProductResponse
+public sealed class ProductResponse
 {
     public int Id { get; set; }
     public required string Name { get; set; }
