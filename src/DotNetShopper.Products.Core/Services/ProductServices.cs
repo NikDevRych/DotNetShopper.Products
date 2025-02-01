@@ -34,6 +34,7 @@ public class ProductServices : IProductServices
                 Id = p.Id,
                 Name = p.Name,
                 Price = p.Price,
+                ImageUrl = p.ImageUrl,
                 IsActive = p.IsActive,
             })
             .FirstOrDefaultAsync();
@@ -48,6 +49,7 @@ public class ProductServices : IProductServices
                 Id = p.Id,
                 Name = p.Name,
                 Price = p.Price,
+                ImageUrl = p.ImageUrl,
                 IsActive = p.IsActive,
             })
             .ToListAsync();
@@ -67,6 +69,7 @@ public class ProductServices : IProductServices
             Id = productToUpdate.Id,
             Name = productToUpdate.Name,
             Price = productToUpdate.Price,
+            ImageUrl = productToUpdate.ImageUrl,
             IsActive = productToUpdate.IsActive,
         };
 

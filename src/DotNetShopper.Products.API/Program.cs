@@ -5,6 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(x => x.AddDefaultPolicy(c =>
+{
+    c.AllowAnyMethod();
+    c.AllowAnyOrigin();
+    c.AllowAnyHeader();
+}));
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ProductDbContext>(options =>
     options.UseInMemoryDatabase("ProductTestDb"));
@@ -13,6 +19,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseCors();
 
 if (app.Environment.IsDevelopment())
 {

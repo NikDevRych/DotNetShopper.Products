@@ -18,6 +18,7 @@ public static class ProductMapper
         {
             Name = request.Name,
             Price = request.Price.Value,
+            ImageUrl = request.ImageUrl,
             IsActive = request.IsActive.Value,
         };
     }
@@ -26,6 +27,7 @@ public static class ProductMapper
     {
         target.Name = product.Name;
         target.Price = product.Price;
+        target.ImageUrl = product.ImageUrl;
         target.IsActive = product.IsActive;
 
         return target;

@@ -15,6 +15,8 @@ public sealed class ProductRequest
     [Range(0, float.MaxValue)]
     public float? Price { get; set; }
 
+    public string? ImageUrl { get; set; }
+
     [Required]
     public bool? IsActive { get; set; }
 }
