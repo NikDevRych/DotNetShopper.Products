@@ -19,7 +19,7 @@ public class ProductController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateProduct(CreateProductRequest request)
+    public async Task<IActionResult> CreateProduct(ProductRequest request)
     {
         var productId = await _productService.CreateProduct(request);
         return CreatedAtAction(nameof(GetProduct), new { id = productId }, null);
@@ -43,18 +43,18 @@ public class ProductController : ControllerBase
         return Ok(products);
     }
 
-    [HttpPut]
+    [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateProduct(UpdateProductRequest request)
+    public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductRequest request)
     {
-        var product = await _productService.UpdateProduct(request);
+        var product = await _productService.UpdateProduct(id, request);
         if (product == null) return NotFound();
         return Ok(product);
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RemoveProduct(int id)

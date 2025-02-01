@@ -5,7 +5,7 @@ namespace DotNetShopper.Products.Core.DTOs;
 /// <summary>
 /// Represents create product request DTO
 /// </summary>
-public sealed class CreateProductRequest
+public sealed class ProductRequest
 {
     [Required]
     [StringLength(120)]
@@ -15,12 +15,6 @@ public sealed class CreateProductRequest
     [Range(0, float.MaxValue)]
     public float? Price { get; set; }
 
-    [Range(0, float.MaxValue)]
-    public float? SalePrice { get; set; }
-
     [Required]
     public bool? IsActive { get; set; }
-
-    [Required]
-    public bool? IsSale { get; set; }
 }
