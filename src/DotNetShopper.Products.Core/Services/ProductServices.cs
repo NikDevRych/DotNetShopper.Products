@@ -40,9 +40,10 @@ public class ProductServices : IProductServices
             .FirstOrDefaultAsync();
     }
 
-    public async Task<List<ProductResponse>> GetProducts(int count, int skip)
+    public async Task<ProductsResponse> GetProducts(int count, int skip, bool isActive)
     {
-        return await _dbContext.Products
+        var products = await _dbContext.Products
+            .Where(x => x.IsActive == isActive)
             .Skip(skip).Take(count)
             .Select(p => new ProductResponse
             {
@@ -53,6 +54,15 @@ public class ProductServices : IProductServices
                 IsActive = p.IsActive,
             })
             .ToListAsync();
+
+        var productsCount = _dbContext.Products.Where(x => x.IsActive == isActive).Count();
+        var maxPages = (productsCount + count - 1) / count;
+
+        return new ProductsResponse
+        {
+            Products = products,
+            MaxPages = maxPages
+        };
     }
 
     public async Task<ProductResponse?> UpdateProduct(int id, ProductRequest request)
