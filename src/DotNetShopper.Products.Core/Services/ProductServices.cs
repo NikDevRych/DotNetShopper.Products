@@ -1,5 +1,6 @@
 ﻿using DotNetShopper.Products.Core.DTOs;
 using DotNetShopper.Products.Core.Interfaces;
+using DotNetShopper.Products.Core.Mappers;
 using DotNetShopper.Products.Domain.Entities;
 using DotNetShopper.Products.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -15,21 +16,9 @@ public class ProductServices : IProductServices
         _dbContext = dbContext;
     }
 
-    public async Task<int> CreateProduct(CreateProductRequest request)
+    public async Task<int> CreateProduct(ProductRequest request)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(request.Name);
-        ArgumentNullException.ThrowIfNull(request.Price);
-        ArgumentNullException.ThrowIfNull(request.IsActive);
-        ArgumentNullException.ThrowIfNull(request.IsSale);
-
-        var productForCreate = new Product
-        {
-            Name = request.Name,
-            Price = request.Price.Value,
-            SalePrice = request.SalePrice,
-            IsActive = request.IsActive.Value,
-            IsSale = request.IsSale.Value
-        };
+        var productForCreate = request.RequestToEntity();
 
         await _dbContext.Products.AddAsync(productForCreate);
         await _dbContext.SaveChangesAsync();
@@ -45,54 +34,53 @@ public class ProductServices : IProductServices
                 Id = p.Id,
                 Name = p.Name,
                 Price = p.Price,
-                SalePrice = p.SalePrice,
+                ImageUrl = p.ImageUrl,
                 IsActive = p.IsActive,
-                IsSale = p.IsSale
             })
             .FirstOrDefaultAsync();
     }
 
-    public async Task<List<ProductResponse>> GetProducts(int count, int skip)
+    public async Task<ProductsResponse> GetProducts(int count, int skip, bool isActive)
     {
-        return await _dbContext.Products
+        var products = await _dbContext.Products
+            .Where(x => x.IsActive == isActive)
             .Skip(skip).Take(count)
             .Select(p => new ProductResponse
             {
                 Id = p.Id,
                 Name = p.Name,
                 Price = p.Price,
-                SalePrice = p.SalePrice,
+                ImageUrl = p.ImageUrl,
                 IsActive = p.IsActive,
-                IsSale = p.IsSale
             })
             .ToListAsync();
+
+        var productsCount = _dbContext.Products.Where(x => x.IsActive == isActive).Count();
+        var maxPages = (productsCount + count - 1) / count;
+
+        return new ProductsResponse
+        {
+            Products = products,
+            MaxPages = maxPages
+        };
     }
 
-    public async Task<ProductResponse?> UpdateProduct(UpdateProductRequest request)
+    public async Task<ProductResponse?> UpdateProduct(int id, ProductRequest request)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(request.Name);
-        ArgumentNullException.ThrowIfNull(request.Price);
-        ArgumentNullException.ThrowIfNull(request.IsActive);
-        ArgumentNullException.ThrowIfNull(request.IsSale);
-
-        var productToUpdate = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == request.Id);
+        var product = request.RequestToEntity();
+        var productToUpdate = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
         if (productToUpdate == null) return null;
 
-        productToUpdate.Name = request.Name;
-        productToUpdate.Price = request.Price.Value;
-        productToUpdate.SalePrice = request.SalePrice;
-        productToUpdate.IsActive = request.IsActive.Value;
-        productToUpdate.IsSale = request.IsSale.Value;
-
+        productToUpdate.EntityToEntity(product);
         await _dbContext.SaveChangesAsync();
 
         var productResponse = new ProductResponse
         {
+            Id = productToUpdate.Id,
             Name = productToUpdate.Name,
             Price = productToUpdate.Price,
-            SalePrice = productToUpdate.SalePrice,
+            ImageUrl = productToUpdate.ImageUrl,
             IsActive = productToUpdate.IsActive,
-            IsSale = productToUpdate.IsSale
         };
 
         return productResponse;
