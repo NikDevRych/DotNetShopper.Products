@@ -10,7 +10,7 @@ public interface IProductServices
 {
     Task<int> CreateProduct(ProductRequest request);
     Task<ProductResponse?> GetProduct(int id);
-    Task<ProductsResponse> GetProducts(int count, int skip, bool isActive);
+    Task<ProductsResponse> GetProducts(int count, int skip, bool? isActive);
     Task<ProductResponse?> UpdateProduct(int id, ProductRequest request);
     Task<Product?> GetProductEntity(int id);
     Task RemoveProduct(Product product);
