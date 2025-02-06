@@ -11,6 +11,8 @@ builder.Services.AddCors(x => x.AddDefaultPolicy(c =>
     c.AllowAnyOrigin();
     c.AllowAnyHeader();
 }));
+builder.Services.Configure<RouteOptions>(options
+    => options.LowercaseUrls = true);
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ProductDbContext>(options =>
     options.UseInMemoryDatabase("ProductTestDb"));
