@@ -61,7 +61,7 @@ public class ProductServices : IProductServices
             })
             .ToListAsync();
 
-        var productsCount = _dbContext.Products.Where(x => x.IsActive == isActive).Count();
+        var productsCount = query.Count();
         var maxPages = (productsCount + count - 1) / count;
 
         return new ProductsResponse
