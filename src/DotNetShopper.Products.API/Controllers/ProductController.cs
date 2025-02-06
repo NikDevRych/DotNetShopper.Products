@@ -37,7 +37,7 @@ public class ProductController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetProduct(int count = 10, int skip = 0, bool isActive = true)
+    public async Task<IActionResult> GetProduct(bool? isActive, int count = 10, int skip = 0)
     {
         var products = await _productService.GetProducts(count, skip, isActive);
         return Ok(products);

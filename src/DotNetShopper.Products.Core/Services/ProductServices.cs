@@ -40,10 +40,16 @@ public class ProductServices : IProductServices
             .FirstOrDefaultAsync();
     }
 
-    public async Task<ProductsResponse> GetProducts(int count, int skip, bool isActive)
+    public async Task<ProductsResponse> GetProducts(int count, int skip, bool? isActive)
     {
-        var products = await _dbContext.Products
-            .Where(x => x.IsActive == isActive)
+        var query = _dbContext.Products.AsQueryable();
+
+        if (isActive.HasValue)
+        {
+            query = query.Where(p => p.IsActive == isActive.Value);
+        }
+
+        var products = await query
             .Skip(skip).Take(count)
             .Select(p => new ProductResponse
             {
