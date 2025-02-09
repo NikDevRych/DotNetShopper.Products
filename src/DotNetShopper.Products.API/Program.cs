@@ -1,9 +1,11 @@
+using DotNetShopper.Products.Core.Constants;
 using DotNetShopper.Products.Core.Interfaces;
 using DotNetShopper.Products.Core.Services;
 using DotNetShopper.Products.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString(SetupConstants.DefaultConnection);
 
 builder.Services.AddCors(x => x.AddDefaultPolicy(c =>
 {
@@ -15,7 +17,7 @@ builder.Services.Configure<RouteOptions>(options
     => options.LowercaseUrls = true);
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ProductDbContext>(options =>
-    options.UseInMemoryDatabase("ProductTestDb"));
+    options.UseNpgsql(connectionString));
 builder.Services.AddScoped<IProductServices, ProductServices>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
