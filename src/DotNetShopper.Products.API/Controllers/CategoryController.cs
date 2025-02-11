@@ -35,6 +35,14 @@ public class CategoryController : ControllerBase
         return Ok(category);
     }
 
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetProduct(bool? isActive)
+    {
+        var categories = await _categoryService.GetCategories(isActive);
+        return Ok(categories);
+    }
+
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
