@@ -1,15 +1,14 @@
 ﻿namespace DotNetShopper.Products.Domain.Entities;
 
 /// <summary>
-/// Represents product entity
+/// Represents category entity
 /// </summary>
-public class Product
+public class Category
 {
     public int Id { get; set; }
     public required string Name { get; set; }
-    public required float Price { get; set; }
-    public string? ImageUrl { get; set; }
+    public required string Link { get; set; }
     public required bool IsActive { get; set; }
 
-    public List<Category> Categories { get; } = [];
+    public List<Product> Products { get; } = [];
 }
