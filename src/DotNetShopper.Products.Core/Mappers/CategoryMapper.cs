@@ -21,4 +21,13 @@ public static class CategoryMapper
             IsActive = request.IsActive.Value,
         };
     }
+
+    public static Category EntityToEntity(this Category target, Category category)
+    {
+        target.Name = category.Name;
+        target.Link = category.Link;
+        target.IsActive = category.IsActive;
+
+        return target;
+    }
 }
