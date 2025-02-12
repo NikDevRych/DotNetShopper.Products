@@ -26,6 +26,12 @@ public class ProductServices : IProductServices
         return productForCreate.Id;
     }
 
+    public async Task AddProductCategories(Product product, List<Category> categories)
+    {
+        product.Categories.AddRange(categories);
+        await _dbContext.SaveChangesAsync();
+    }
+
     public async Task<ProductResponse?> GetProduct(int id, bool category)
     {
         return await _dbContext.Products.Where(p => p.Id == id)

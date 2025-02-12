@@ -10,6 +10,7 @@ public interface ICategoryService
 {
     Task<int> CreateCategory(CategoryRequest request);
     Task<CategoryResponse?> GetCategory(int id);
+    Task<List<Category>> GetCategories(List<int> categoryIds);
     Task<CategoriesResponse> GetCategories(bool? isActive);
     Task<CategoryResponse?> UpdateCategory(int id, CategoryRequest request);
     Task<Category?> GetCategoryEntity(int id);

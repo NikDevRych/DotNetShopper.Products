@@ -39,6 +39,13 @@ public class CategoryService : ICategoryService
             .FirstOrDefaultAsync();
     }
 
+    public async Task<List<Category>> GetCategories(List<int> categoryIds)
+    {
+        return await _dbContext.Categories
+            .Where(c => categoryIds.Contains(c.Id))
+            .ToListAsync();
+    }
+
     public async Task<CategoriesResponse> GetCategories(bool? isActive)
     {
         var query = _dbContext.Categories.AsQueryable();

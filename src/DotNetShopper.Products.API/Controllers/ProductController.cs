@@ -10,10 +10,12 @@ namespace DotNetShopper.Products.API.Controllers;
 public class ProductController : ControllerBase
 {
     private readonly IProductServices _productService;
+    private readonly ICategoryService _categoryService;
 
-    public ProductController(IProductServices productService)
+    public ProductController(IProductServices productService, ICategoryService categoryService)
     {
         _productService = productService;
+        _categoryService = categoryService;
     }
 
     [HttpPost]
@@ -23,6 +25,24 @@ public class ProductController : ControllerBase
     {
         var productId = await _productService.CreateProduct(request);
         return CreatedAtAction(nameof(GetProduct), new { id = productId }, null);
+    }
+
+    [HttpPost("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddProductCategories(int id, [FromBody] List<int> categoryIds)
+    {
+        var product = await _productService.GetProductEntity(id);
+        if (product == null) return NotFound();
+
+        var categories = await _categoryService.GetCategories(categoryIds);
+        if (categories.Count == 0 || categories.Count != categoryIds.Count)
+        {
+            return NotFound();
+        }
+
+        await _productService.AddProductCategories(product, categories);
+        return Ok();
     }
 
     [HttpGet("{id}")]
