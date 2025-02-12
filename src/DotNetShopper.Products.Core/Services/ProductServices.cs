@@ -26,7 +26,7 @@ public class ProductServices : IProductServices
         return productForCreate.Id;
     }
 
-    public async Task<ProductResponse?> GetProduct(int id)
+    public async Task<ProductResponse?> GetProduct(int id, bool category)
     {
         return await _dbContext.Products.Where(p => p.Id == id)
             .Select(p => new ProductResponse
@@ -36,6 +36,13 @@ public class ProductServices : IProductServices
                 Price = p.Price,
                 ImageUrl = p.ImageUrl,
                 IsActive = p.IsActive,
+                Categories = category ? p.Categories.Select(c => new CategoryResponse
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Link = c.Link,
+                    IsActive = c.IsActive
+                }).ToList() : null
             })
             .FirstOrDefaultAsync();
     }

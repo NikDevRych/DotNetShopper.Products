@@ -28,9 +28,9 @@ public class ProductController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetProduct(int id)
+    public async Task<IActionResult> GetProduct(int id, bool category = false)
     {
-        var product = await _productService.GetProduct(id);
+        var product = await _productService.GetProduct(id, category);
         if (product == null) return NotFound();
         return Ok(product);
     }

@@ -9,7 +9,7 @@ namespace DotNetShopper.Products.Core.Interfaces;
 public interface IProductServices
 {
     Task<int> CreateProduct(ProductRequest request);
-    Task<ProductResponse?> GetProduct(int id);
+    Task<ProductResponse?> GetProduct(int id, bool category);
     Task<ProductsResponse> GetProducts(int count, int skip, bool? isActive);
     Task<ProductResponse?> UpdateProduct(int id, ProductRequest request);
     Task<Product?> GetProductEntity(int id);
