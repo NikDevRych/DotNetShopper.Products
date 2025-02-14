@@ -12,12 +12,10 @@ namespace DotNetShopper.Products.API.Controllers;
 public class ProductController : ControllerBase
 {
     private readonly IProductServices _productService;
-    private readonly ICategoryService _categoryService;
 
-    public ProductController(IProductServices productService, ICategoryService categoryService)
+    public ProductController(IProductServices productService)
     {
         _productService = productService;
-        _categoryService = categoryService;
     }
 
     [HttpPost]
