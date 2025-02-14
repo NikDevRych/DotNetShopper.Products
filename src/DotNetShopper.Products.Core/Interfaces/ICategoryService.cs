@@ -1,4 +1,5 @@
-﻿using DotNetShopper.Products.Core.DTOs;
+﻿using DotNetShopper.Products.Core.Abstractions;
+using DotNetShopper.Products.Core.DTOs;
 using DotNetShopper.Products.Domain.Entities;
 
 namespace DotNetShopper.Products.Core.Interfaces;
@@ -8,11 +9,9 @@ namespace DotNetShopper.Products.Core.Interfaces;
 /// </summary>
 public interface ICategoryService
 {
-    Task<int> CreateCategory(CategoryRequest request);
-    Task<CategoryResponse?> GetCategory(int id);
-    Task<List<Category>> GetCategories(List<int> categoryIds);
-    Task<CategoriesResponse> GetCategories(bool? isActive);
-    Task<CategoryResponse?> UpdateCategory(int id, CategoryRequest request);
-    Task<Category?> GetCategoryEntity(int id);
-    Task RemoveCategory(Category category);
+    Task<Result<int>> CreateCategoryAsync(CategoryRequest request);
+    Task<Result<CategoryResponse>> GetCategoryAsync(int id);
+    Task<Result<CategoriesResponse>> GetCategoriesAsync(bool? isActive);
+    Task<Result> UpdateCategoryAsync(int id, CategoryRequest request);
+    Task<Result> RemoveCategoryAsync(int id);
 }

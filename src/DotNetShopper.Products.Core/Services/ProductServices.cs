@@ -3,7 +3,6 @@ using DotNetShopper.Products.Core.DTOs;
 using DotNetShopper.Products.Core.Errors;
 using DotNetShopper.Products.Core.Interfaces;
 using DotNetShopper.Products.Core.Mappers;
-using DotNetShopper.Products.Domain.Entities;
 using DotNetShopper.Products.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -126,11 +125,6 @@ public class ProductServices : IProductServices
         };
 
         return Result.Success(response);
-    }
-
-    public async Task<Product?> GetProductEntityAsync(int id)
-    {
-        return await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<Result> RemoveProductAsync(int id)

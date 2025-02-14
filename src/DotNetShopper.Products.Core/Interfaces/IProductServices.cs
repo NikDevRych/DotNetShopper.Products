@@ -14,6 +14,5 @@ public interface IProductServices
     Task<Result<ProductResponse>> GetProductAsync(int id, bool category);
     Task<Result<ProductsResponse>> GetProductsAsync(int count, int skip, bool? isActive);
     Task<Result> UpdateProductAsync(int id, ProductRequest request);
-    Task<Product?> GetProductEntityAsync(int id);
     Task<Result> RemoveProductAsync(int id);
 }

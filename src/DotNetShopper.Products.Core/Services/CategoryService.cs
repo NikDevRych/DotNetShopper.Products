@@ -1,7 +1,8 @@
-﻿using DotNetShopper.Products.Core.DTOs;
+﻿using DotNetShopper.Products.Core.Abstractions;
+using DotNetShopper.Products.Core.DTOs;
+using DotNetShopper.Products.Core.Errors;
 using DotNetShopper.Products.Core.Interfaces;
 using DotNetShopper.Products.Core.Mappers;
-using DotNetShopper.Products.Domain.Entities;
 using DotNetShopper.Products.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,19 +17,19 @@ public class CategoryService : ICategoryService
         _dbContext = dbContext;
     }
 
-    public async Task<int> CreateCategory(CategoryRequest request)
+    public async Task<Result<int>> CreateCategoryAsync(CategoryRequest request)
     {
-        var categoryForCreate = request.RequestToEntity();
+        var category = request.RequestToEntity();
 
-        await _dbContext.Categories.AddAsync(categoryForCreate);
+        await _dbContext.Categories.AddAsync(category);
         await _dbContext.SaveChangesAsync();
 
-        return categoryForCreate.Id;
+        return Result.Success(category.Id);
     }
 
-    public async Task<CategoryResponse?> GetCategory(int id)
+    public async Task<Result<CategoryResponse>> GetCategoryAsync(int id)
     {
-        return await _dbContext.Categories.Where(c => c.Id == id)
+        var category = await _dbContext.Categories.Where(c => c.Id == id)
             .Select(c => new CategoryResponse
             {
                 Id = c.Id,
@@ -37,16 +38,13 @@ public class CategoryService : ICategoryService
                 IsActive = c.IsActive
             })
             .FirstOrDefaultAsync();
+
+        if (category is null) return Result.Failure<CategoryResponse>(CategoryErrors.NotFound);
+
+        return Result.Success(category);
     }
 
-    public async Task<List<Category>> GetCategories(List<int> categoryIds)
-    {
-        return await _dbContext.Categories
-            .Where(c => categoryIds.Contains(c.Id))
-            .ToListAsync();
-    }
-
-    public async Task<CategoriesResponse> GetCategories(bool? isActive)
+    public async Task<Result<CategoriesResponse>> GetCategoriesAsync(bool? isActive)
     {
         var query = _dbContext.Categories.AsQueryable();
 
@@ -55,7 +53,7 @@ public class CategoryService : ICategoryService
             query = query.Where(c => c.IsActive == isActive.Value);
         }
 
-        return new CategoriesResponse
+        var response = new CategoriesResponse
         {
             Categories = await query.Select(c => new CategoryResponse
             {
@@ -66,34 +64,30 @@ public class CategoryService : ICategoryService
             })
             .ToListAsync()
         };
+
+        return Result.Success(response);
     }
 
-    public async Task<CategoryResponse?> UpdateCategory(int id, CategoryRequest request)
+    public async Task<Result> UpdateCategoryAsync(int id, CategoryRequest request)
     {
         var category = request.RequestToEntity();
         var categoryToUpdate = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
-        if (categoryToUpdate == null) return null;
+        if (categoryToUpdate is null) return Result.Failure(CategoryErrors.NotFound);
 
         category.EntityToEntity(category);
         await _dbContext.SaveChangesAsync();
 
-        return new CategoryResponse
-        {
-            Id = categoryToUpdate.Id,
-            Name = categoryToUpdate.Name,
-            Link = categoryToUpdate.Link,
-            IsActive = categoryToUpdate.IsActive
-        };
+        return Result.Success();
     }
 
-    public async Task<Category?> GetCategoryEntity(int id)
+    public async Task<Result> RemoveCategoryAsync(int id)
     {
-        return await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
-    }
+        var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
+        if (category is null) return Result.Failure(CategoryErrors.NotFound);
 
-    public async Task RemoveCategory(Category category)
-    {
         _dbContext.Categories.Remove(category);
         await _dbContext.SaveChangesAsync();
+
+        return Result.Success();
     }
 }
