@@ -30,8 +30,9 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost("{id}/category")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddProductCategories(int id, [FromBody] List<int> categoryIds)
     {
         var result = await _productService.AddProductCategoriesAsync(id, categoryIds);
@@ -67,7 +68,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductRequest request)
@@ -78,7 +79,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RemoveProduct(int id)
     {
