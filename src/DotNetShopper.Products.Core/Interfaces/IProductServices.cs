@@ -1,4 +1,5 @@
-﻿using DotNetShopper.Products.Core.DTOs;
+﻿using DotNetShopper.Products.Core.Abstractions;
+using DotNetShopper.Products.Core.DTOs;
 using DotNetShopper.Products.Domain.Entities;
 
 namespace DotNetShopper.Products.Core.Interfaces;
@@ -8,11 +9,11 @@ namespace DotNetShopper.Products.Core.Interfaces;
 /// </summary>
 public interface IProductServices
 {
-    Task<int> CreateProduct(ProductRequest request);
-    Task AddProductCategories(Product product, List<Category> categories);
-    Task<ProductResponse?> GetProduct(int id, bool category);
-    Task<ProductsResponse> GetProducts(int count, int skip, bool? isActive);
-    Task<ProductResponse?> UpdateProduct(int id, ProductRequest request);
-    Task<Product?> GetProductEntity(int id);
-    Task RemoveProduct(Product product);
+    Task<Result<int>> CreateProductAsync(ProductRequest request);
+    Task<Result> AddProductCategoriesAsync(int productId, IEnumerable<int> categoryIds);
+    Task<Result<ProductResponse>> GetProductAsync(int id, bool category);
+    Task<Result<ProductsResponse>> GetProductsAsync(int count, int skip, bool? isActive);
+    Task<Result> UpdateProductAsync(int id, ProductRequest request);
+    Task<Product?> GetProductEntityAsync(int id);
+    Task<Result> RemoveProductAsync(int id);
 }

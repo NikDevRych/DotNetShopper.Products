@@ -1,4 +1,6 @@
-﻿using DotNetShopper.Products.Core.DTOs;
+﻿using DotNetShopper.Products.Core.Abstractions;
+using DotNetShopper.Products.Core.DTOs;
+using DotNetShopper.Products.Core.Errors;
 using DotNetShopper.Products.Core.Interfaces;
 using DotNetShopper.Products.Core.Mappers;
 using DotNetShopper.Products.Domain.Entities;
@@ -16,25 +18,41 @@ public class ProductServices : IProductServices
         _dbContext = dbContext;
     }
 
-    public async Task<int> CreateProduct(ProductRequest request)
+    public async Task<Result<int>> CreateProductAsync(ProductRequest request)
     {
-        var productForCreate = request.RequestToEntity();
+        var product = request.RequestToEntity();
 
-        await _dbContext.Products.AddAsync(productForCreate);
+        await _dbContext.Products.AddAsync(product);
         await _dbContext.SaveChangesAsync();
 
-        return productForCreate.Id;
+        return Result.Success(product.Id);
     }
 
-    public async Task AddProductCategories(Product product, List<Category> categories)
+    public async Task<Result> AddProductCategoriesAsync(int productId, IEnumerable<int> categoryIds)
     {
+        var product = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == productId);
+        if (product is null) return Result.Failure(ProductErrors.NotFound);
+
+        var categories = await _dbContext.Categories.Where(c => categoryIds.Contains(c.Id)).ToListAsync();
+        if (categories.Count == 0 || categories.Count != categoryIds.Count())
+        {
+            return Result.Failure(CategoryErrors.SomeNotFound);
+        }
+
+        var categoriesInUse = await _dbContext.Products
+            .Where(p => p.Id == productId)
+            .AnyAsync(p => p.Categories.Any(c => categoryIds.Contains(c.Id)));
+        if (categoriesInUse) return Result.Failure(ProductErrors.ConflictCategory);
+
         product.Categories.AddRange(categories);
         await _dbContext.SaveChangesAsync();
+
+        return Result.Success();
     }
 
-    public async Task<ProductResponse?> GetProduct(int id, bool category)
+    public async Task<Result<ProductResponse>> GetProductAsync(int id, bool category)
     {
-        return await _dbContext.Products.Where(p => p.Id == id)
+        var product = await _dbContext.Products.Where(p => p.Id == id)
             .Select(p => new ProductResponse
             {
                 Id = p.Id,
@@ -51,9 +69,13 @@ public class ProductServices : IProductServices
                 }).ToList() : null
             })
             .FirstOrDefaultAsync();
+
+        if (product is null) return Result.Failure<ProductResponse>(ProductErrors.NotFound);
+
+        return Result.Success(product);
     }
 
-    public async Task<ProductsResponse> GetProducts(int count, int skip, bool? isActive)
+    public async Task<Result<ProductsResponse>> GetProductsAsync(int count, int skip, bool? isActive)
     {
         var query = _dbContext.Products.AsQueryable();
 
@@ -74,26 +96,27 @@ public class ProductServices : IProductServices
             })
             .ToListAsync();
 
-        var productsCount = query.Count();
+        var productsCount = await query.CountAsync();
         var maxPages = (productsCount + count - 1) / count;
-
-        return new ProductsResponse
+        var response = new ProductsResponse
         {
             Products = products,
             MaxPages = maxPages
         };
+
+        return Result.Success(response);
     }
 
-    public async Task<ProductResponse?> UpdateProduct(int id, ProductRequest request)
+    public async Task<Result> UpdateProductAsync(int id, ProductRequest request)
     {
         var product = request.RequestToEntity();
         var productToUpdate = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
-        if (productToUpdate == null) return null;
+        if (productToUpdate is null) return Result.Failure(ProductErrors.NotFound);
 
         productToUpdate.EntityToEntity(product);
         await _dbContext.SaveChangesAsync();
 
-        var productResponse = new ProductResponse
+        var response = new ProductResponse
         {
             Id = productToUpdate.Id,
             Name = productToUpdate.Name,
@@ -102,17 +125,22 @@ public class ProductServices : IProductServices
             IsActive = productToUpdate.IsActive,
         };
 
-        return productResponse;
+        return Result.Success(response);
     }
 
-    public async Task<Product?> GetProductEntity(int id)
+    public async Task<Product?> GetProductEntityAsync(int id)
     {
         return await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task RemoveProduct(Product product)
+    public async Task<Result> RemoveProductAsync(int id)
     {
+        var product = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
+        if (product is null) return Result.Failure(ProductErrors.NotFound);
+
         _dbContext.Products.Remove(product);
         await _dbContext.SaveChangesAsync();
+
+        return Result.Success();
     }
 }

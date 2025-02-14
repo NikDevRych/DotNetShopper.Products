@@ -1,6 +1,8 @@
 ﻿using DotNetShopper.Products.Core.DTOs;
+using DotNetShopper.Products.Core.Errors;
 using DotNetShopper.Products.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace DotNetShopper.Products.API.Controllers;
 
@@ -23,26 +25,27 @@ public class ProductController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateProduct(ProductRequest request)
     {
-        var productId = await _productService.CreateProduct(request);
-        return CreatedAtAction(nameof(GetProduct), new { id = productId }, null);
+        var result = await _productService.CreateProductAsync(request);
+        return CreatedAtAction(nameof(GetProduct), new { id = result.Value }, null);
     }
 
-    [HttpPost("{id}")]
+    [HttpPost("{id}/category")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddProductCategories(int id, [FromBody] List<int> categoryIds)
     {
-        var product = await _productService.GetProductEntity(id);
-        if (product == null) return NotFound();
+        var result = await _productService.AddProductCategoriesAsync(id, categoryIds);
 
-        var categories = await _categoryService.GetCategories(categoryIds);
-        if (categories.Count == 0 || categories.Count != categoryIds.Count)
+        if (result.IsFailure && result.Error == ProductErrors.NotFound)
         {
             return NotFound();
         }
+        if (result.IsFailure)
+        {
+            return Problem(statusCode: (int)HttpStatusCode.BadRequest, detail: result.Error.Message);
+        }
 
-        await _productService.AddProductCategories(product, categories);
-        return Ok();
+        return NoContent();
     }
 
     [HttpGet("{id}")]
@@ -50,17 +53,17 @@ public class ProductController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetProduct(int id, bool category = false)
     {
-        var product = await _productService.GetProduct(id, category);
-        if (product == null) return NotFound();
-        return Ok(product);
+        var result = await _productService.GetProductAsync(id, category);
+        if (result.IsFailure) return NotFound();
+        return Ok(result.Value);
     }
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProduct(bool? isActive, int count = 10, int skip = 0)
     {
-        var products = await _productService.GetProducts(count, skip, isActive);
-        return Ok(products);
+        var result = await _productService.GetProductsAsync(count, skip, isActive);
+        return Ok(result.Value);
     }
 
     [HttpPut("{id}")]
@@ -69,9 +72,9 @@ public class ProductController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductRequest request)
     {
-        var product = await _productService.UpdateProduct(id, request);
-        if (product == null) return NotFound();
-        return Ok(product);
+        var result = await _productService.UpdateProductAsync(id, request);
+        if (result.IsFailure) return NotFound();
+        return NoContent();
     }
 
     [HttpDelete("{id}")]
@@ -79,9 +82,8 @@ public class ProductController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RemoveProduct(int id)
     {
-        var productToRemove = await _productService.GetProductEntity(id);
-        if (productToRemove == null) return NotFound();
-        await _productService.RemoveProduct(productToRemove);
-        return Ok();
+        var result = await _productService.RemoveProductAsync(id);
+        if (result.IsFailure) return NotFound();
+        return NoContent();
     }
 }
