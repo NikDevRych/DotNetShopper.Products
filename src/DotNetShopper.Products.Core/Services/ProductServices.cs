@@ -27,7 +27,7 @@ public class ProductServices : IProductServices
         return Result.Success(product.Id);
     }
 
-    public async Task<Result> AddProductCategoriesAsync(int productId, int categoryId)
+    public async Task<Result> AddProductCategoryAsync(int productId, int categoryId)
     {
         var product = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == productId);
         if (product is null) return Result.Failure(ProductErrors.NotFound);
@@ -130,6 +130,25 @@ public class ProductServices : IProductServices
         if (product is null) return Result.Failure(ProductErrors.NotFound);
 
         _dbContext.Products.Remove(product);
+        await _dbContext.SaveChangesAsync();
+
+        return Result.Success();
+    }
+
+    public async Task<Result> RemoveProductCategoryAsync(int productId, int categoryId)
+    {
+        var product = await _dbContext.Products.Include(p => p.Categories).FirstOrDefaultAsync(p => p.Id == productId);
+        if (product is null) return Result.Failure(ProductErrors.NotFound);
+
+        var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
+        if (category is null) return Result.Failure(CategoryErrors.NotFound);
+
+        var categoryInUse = await _dbContext.Products
+             .Where(p => p.Id == productId)
+             .AnyAsync(p => p.Categories.Any(c => c.Id == categoryId));
+        if (!categoryInUse) return Result.Failure(ProductErrors.NotHaveCategory);
+
+        product.Categories.Remove(category);
         await _dbContext.SaveChangesAsync();
 
         return Result.Success();

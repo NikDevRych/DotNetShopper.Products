@@ -31,9 +31,9 @@ public class ProductController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddProductCategories(int id, [FromRoute(Name = "category_id")] int categoryId)
+    public async Task<IActionResult> AddProductCategory(int id, [FromRoute(Name = "category_id")] int categoryId)
     {
-        var result = await _productService.AddProductCategoriesAsync(id, categoryId);
+        var result = await _productService.AddProductCategoryAsync(id, categoryId);
 
         if (result.IsFailure && result.Error == ProductErrors.NotFound)
         {
@@ -83,6 +83,26 @@ public class ProductController : ControllerBase
     {
         var result = await _productService.RemoveProductAsync(id);
         if (result.IsFailure) return NotFound();
+        return NoContent();
+    }
+
+    [HttpDelete("{id}/category/{category_id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RemoveProductCategory(int id, [FromRoute(Name = "category_id")] int categoryId)
+    {
+        var result = await _productService.RemoveProductCategoryAsync(id, categoryId);
+
+        if (result.IsFailure && result.Error == ProductErrors.NotFound)
+        {
+            return NotFound();
+        }
+        if (result.IsFailure)
+        {
+            return Problem(statusCode: (int)HttpStatusCode.BadRequest, detail: result.Error.Message);
+        }
+
         return NoContent();
     }
 }

@@ -10,9 +10,10 @@ namespace DotNetShopper.Products.Core.Interfaces;
 public interface IProductServices
 {
     Task<Result<int>> CreateProductAsync(ProductRequest request);
-    Task<Result> AddProductCategoriesAsync(int productId, int categoryId);
+    Task<Result> AddProductCategoryAsync(int productId, int categoryId);
     Task<Result<ProductResponse>> GetProductAsync(int id, bool category);
     Task<Result<ProductsResponse>> GetProductsAsync(int count, int skip, bool? isActive);
     Task<Result> UpdateProductAsync(int id, ProductRequest request);
     Task<Result> RemoveProductAsync(int id);
+    Task<Result> RemoveProductCategoryAsync(int productId, int categoryId);
 }
