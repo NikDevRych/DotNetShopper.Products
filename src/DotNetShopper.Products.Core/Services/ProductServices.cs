@@ -106,22 +106,15 @@ public class ProductServices : IProductServices
     public async Task<Result> UpdateProductAsync(int id, ProductRequest request)
     {
         var product = request.RequestToEntity();
-        var productToUpdate = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
-        if (productToUpdate is null) return Result.Failure(ProductErrors.NotFound);
+        product.Id = id;
 
-        productToUpdate.EntityToEntity(product);
+        var productExist = await _dbContext.Products.AnyAsync(p => p.Id == id);
+        if (!productExist) return Result.Failure(ProductErrors.NotFound);
+
+        _dbContext.Products.Update(product);
         await _dbContext.SaveChangesAsync();
 
-        var response = new ProductResponse
-        {
-            Id = productToUpdate.Id,
-            Name = productToUpdate.Name,
-            Price = productToUpdate.Price,
-            ImageUrl = productToUpdate.ImageUrl,
-            IsActive = productToUpdate.IsActive,
-        };
-
-        return Result.Success(response);
+        return Result.Success();
     }
 
     public async Task<Result> RemoveProductAsync(int id)
