@@ -27,13 +27,13 @@ public class ProductController : ControllerBase
         return CreatedAtAction(nameof(GetProduct), new { id = result.Value }, null);
     }
 
-    [HttpPost("{id}/category")]
+    [HttpPost("{id}/category/{category_id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddProductCategories(int id, [FromBody] List<int> categoryIds)
+    public async Task<IActionResult> AddProductCategories(int id, [FromRoute(Name = "category_id")] int categoryId)
     {
-        var result = await _productService.AddProductCategoriesAsync(id, categoryIds);
+        var result = await _productService.AddProductCategoriesAsync(id, categoryId);
 
         if (result.IsFailure && result.Error == ProductErrors.NotFound)
         {

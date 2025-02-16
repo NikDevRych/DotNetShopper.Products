@@ -27,23 +27,20 @@ public class ProductServices : IProductServices
         return Result.Success(product.Id);
     }
 
-    public async Task<Result> AddProductCategoriesAsync(int productId, IEnumerable<int> categoryIds)
+    public async Task<Result> AddProductCategoriesAsync(int productId, int categoryId)
     {
         var product = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == productId);
         if (product is null) return Result.Failure(ProductErrors.NotFound);
 
-        var categories = await _dbContext.Categories.Where(c => categoryIds.Contains(c.Id)).ToListAsync();
-        if (categories.Count == 0 || categories.Count != categoryIds.Count())
-        {
-            return Result.Failure(CategoryErrors.SomeNotFound);
-        }
+        var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
+        if (category is null) return Result.Failure(CategoryErrors.NotFound);
 
-        var categoriesInUse = await _dbContext.Products
+        var categoryInUse = await _dbContext.Products
             .Where(p => p.Id == productId)
-            .AnyAsync(p => p.Categories.Any(c => categoryIds.Contains(c.Id)));
-        if (categoriesInUse) return Result.Failure(ProductErrors.ConflictCategory);
+            .AnyAsync(p => p.Categories.Any(c => c.Id == categoryId));
+        if (categoryInUse) return Result.Failure(ProductErrors.ConflictCategory);
 
-        product.Categories.AddRange(categories);
+        product.Categories.Add(category);
         await _dbContext.SaveChangesAsync();
 
         return Result.Success();
