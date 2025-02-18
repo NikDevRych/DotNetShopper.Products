@@ -71,10 +71,12 @@ public class CategoryService : ICategoryService
     public async Task<Result> UpdateCategoryAsync(int id, CategoryRequest request)
     {
         var category = request.RequestToEntity();
-        var categoryToUpdate = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
-        if (categoryToUpdate is null) return Result.Failure(CategoryErrors.NotFound);
+        category.Id = id;
 
-        category.EntityToEntity(category);
+        var categoryExist = await _dbContext.Categories.AnyAsync(c => c.Id == id);
+        if (!categoryExist) return Result.Failure(CategoryErrors.NotFound);
+
+        _dbContext.Categories.Update(category);
         await _dbContext.SaveChangesAsync();
 
         return Result.Success();

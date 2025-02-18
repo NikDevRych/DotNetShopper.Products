@@ -22,14 +22,4 @@ public static class ProductMapper
             IsActive = request.IsActive.Value,
         };
     }
-
-    public static Product EntityToEntity(this Product target, Product product)
-    {
-        target.Name = product.Name;
-        target.Price = product.Price;
-        target.ImageUrl = product.ImageUrl;
-        target.IsActive = product.IsActive;
-
-        return target;
-    }
 }
