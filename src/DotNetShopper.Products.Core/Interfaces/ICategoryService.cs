@@ -1,6 +1,5 @@
 ﻿using DotNetShopper.Products.Core.Abstractions;
 using DotNetShopper.Products.Core.DTOs;
-using DotNetShopper.Products.Domain.Entities;
 
 namespace DotNetShopper.Products.Core.Interfaces;
 

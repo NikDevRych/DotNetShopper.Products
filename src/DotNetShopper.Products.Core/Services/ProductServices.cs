@@ -71,13 +71,18 @@ public class ProductServices : IProductServices
         return Result.Success(product);
     }
 
-    public async Task<Result<ProductsResponse>> GetProductsAsync(int count, int skip, bool? isActive)
+    public async Task<Result<ProductsResponse>> GetProductsAsync(int count, int skip, bool? isActive, string? categoryLink)
     {
         var query = _dbContext.Products.AsQueryable();
 
         if (isActive.HasValue)
         {
             query = query.Where(p => p.IsActive == isActive.Value);
+        }
+
+        if (!string.IsNullOrEmpty(categoryLink))
+        {
+            query = query.Where(p => p.Categories.Any(c => c.Link.Equals(categoryLink, StringComparison.CurrentCultureIgnoreCase)));
         }
 
         var products = await query
